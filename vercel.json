@@ -1,0 +1,9 @@
+{
+  "version": 2,
+  "name": "meu-quasar-app",
+  "buildCommand": "yarn build",
+  "outputDirectory": "dist/spa",
+  "installCommand": "yarn install",
+  "framework": null,
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+}

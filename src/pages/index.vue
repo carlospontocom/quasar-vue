@@ -11,24 +11,52 @@
           @click="toggleLeftDrawer"
         />
 
-        <q-toolbar-title> Quasar App </q-toolbar-title>
-
-        <div>Quasar v{{ $q.version }}</div>
+        <q-toolbar-title> QaV </q-toolbar-title>
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
+    <q-drawer v-model="leftDrawerOpen" bordered>
       <q-list>
-        <q-item-label header> Essential Links </q-item-label>
+        <q-item-label header> Navegação </q-item-label>
 
+        <!-- Links Principais/Externos -->
         <EssentialLink
           v-for="link in linksList"
           :key="link.label"
           v-bind="link"
         />
+
+        <q-separator />
+
+        <!-- Submenu Usuários -->
+        <q-expansion-item
+          icon="people"
+          label="Usuários"
+          caption="Gerenciamento de contas"
+        >
+          <!-- Apontando para o caminho exato /CadastroUsuario -->
+          <q-item clickable v-ripple to="/CadastroUsuario" class="q-pl-lg">
+            <q-item-section avatar>
+              <q-icon name="person_add" />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>Cadastrar Usuário</q-item-label>
+            </q-item-section>
+          </q-item>
+
+          <q-item clickable v-ripple to="/GerenciarUsuario" class="q-pl-lg">
+            <q-item-section avatar>
+              <q-icon name="manage_accounts" />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>Gerenciar Usuários</q-item-label>
+            </q-item-section>
+          </q-item>
+        </q-expansion-item>
       </q-list>
     </q-drawer>
 
+    <!-- O conteúdo da rota interna vai abrir aqui ao lado direito -->
     <q-page-container>
       <router-view />
     </q-page-container>
@@ -38,7 +66,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import EssentialLink, {
-  type EssentialLinkProps
+  type EssentialLinkProps,
 } from "@/components/EssentialLink.vue";
 
 const linksList: EssentialLinkProps[] = [
@@ -46,44 +74,8 @@ const linksList: EssentialLinkProps[] = [
     label: "Docs",
     caption: "quasar.dev",
     icon: "school",
-    link: "https://quasar.dev"
+    link: "https://quasar.dev",
   },
-  {
-    label: "GitHub",
-    caption: "github.com/quasarframework",
-    icon: "code",
-    link: "https://github.com/quasarframework"
-  },
-  {
-    label: "Discord Chat Channel",
-    caption: "chat.quasar.dev",
-    icon: "chat",
-    link: "https://chat.quasar.dev"
-  },
-  {
-    label: "Forum",
-    caption: "forum.quasar.dev",
-    icon: "record_voice_over",
-    link: "https://forum.quasar.dev"
-  },
-  {
-    label: "Twitter",
-    caption: "@quasarframework",
-    icon: "rss_feed",
-    link: "https://twitter.quasar.dev"
-  },
-  {
-    label: "Facebook",
-    caption: "@QuasarFramework",
-    icon: "public",
-    link: "https://facebook.quasar.dev"
-  },
-  {
-    label: "Quasar Awesome",
-    caption: "Community Quasar projects",
-    icon: "favorite",
-    link: "https://awesome.quasar.dev"
-  }
 ];
 
 const leftDrawerOpen = ref(false);
