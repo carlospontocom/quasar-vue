@@ -1,28 +1,58 @@
 <template>
   <section class="formulario-container">
-    <h1 class="title">Carteira Quasar App</h1>
-
-    <div class="resumo">
-      <div class="box-despesa" icon="money_off">
-        <span class="span-box">Despesa</span>
-        <q-icon name="money_off" size="2rem" />
-        RS {{ totalDespesa }}
+    <div class="header-saldo">
+      <div>
+        <span class="badge-top">Saldo total </span>
+        <h4 class="valor">{{ moedaBR.format(saldo) }}</h4>
+        <span class="footer-saldo">Carteira digital e financeira!</span>
       </div>
 
-      <div class="box-receita" icon="attach_money">
-        <span class="span-box">Receita</span>
-        <q-icon name="attach_money" size="2rem" />
-        RS {{ totalReceita }}
-      </div>
-
-      <div class="box-saldo" icon="account_balance">
-        <span class="span-box">Saldo</span>
-        <q-icon name="account_balance" size="2rem" />
-        RS {{ saldo }}
+      <div class="btn-fakes">
+        <div class="btn-fake-top">Renda</div>
+        <div class="btn-fake-top">Gastos</div>
+        <q-btn
+          class="btn-fake-top"
+          style="color: white; background-color: #007bff; border-radius: 5px"
+        >
+          <q-icon name="add" />Adicionar transação
+        </q-btn>
       </div>
     </div>
 
-    <q-form class="q-pa-md q-gutter-md">
+    <div class="resumo">
+      <div class="box-despesa" icon="money_off">
+        <q-icon
+          name="trending_up"
+          size="2rem"
+          style="background: green; border-radius: 5px; padding: 1rem"
+        />
+        <p class="number-box">
+          {{ moedaBR.format(totalDespesa) }}
+        </p>
+      </div>
+
+      <div class="box-receita" icon="attach_money">
+        <q-icon
+          name="trending_down"
+          size="2rem"
+          style="background: pink; border-radius: 5px; padding: 1rem"
+        />
+        <p class="number-box">{{ moedaBR.format(totalReceita) }}</p>
+      </div>
+
+      <div class="box-saldo" icon="account_balance">
+        <q-icon
+          name="account_balance"
+          size="2rem"
+          style="background: blue; border-radius: 5px; padding: 1rem"
+        />
+        <p class="number-box">
+          {{ moedaBR.format(saldo) }}
+        </p>
+      </div>
+    </div>
+
+    <q-form class="formulario">
       <q-input outlined placeholder="Valor" v-model="valor" type="number" />
       <q-input outlined placeholder="Descrição" v-model="descricao" />
 
@@ -39,29 +69,41 @@
       <q-btn color="primary" type="primary">Adicionar </q-btn>
     </q-form>
 
-    <q-card-section>
+    <section>
       <div class="text-h6">Transações</div>
-    </q-card-section>
-    <q-separator />
+    </section>
 
     <div class="cards">
-      <q-card
-        v-for="transacao in transacoes"
-        :key="transacao.id"
-        class="my-card"
-      >
-        <q-card-section>
-          <div class="text-h6">{{ transacao.descricao }}</div>
-          <div class="text-subtitle2">{{ transacao.valor }}</div>
-          <div class="text-subtitle2">{{ transacao.tipo }}</div>
-        </q-card-section>
-      </q-card>
+      <div v-for="transacao in transacoes" :key="transacao.id" class="card">
+        <div class="flex items-center">
+          <q-icon
+            :name="
+              transacao.tipo === 'receita' ? 'trending_up' : 'trending_down'
+            "
+            :color="transacao.tipo === 'receita' ? 'positive' : 'negative'"
+            :class="transacao.tipo === 'receita' ? 'bg-green-4' : 'bg-red-4'"
+            size="2rem"
+            class="q-pa-xs rounded-borders"
+          />
+          <div class="flex column q-ml-sm">
+            <div class="text-h6">{{ transacao.descricao }}</div>
+            <span>07/09/2026</span>
+          </div>
+          <p class="badge">{{ transacao.tipo }}</p>
+        </div>
+        <h5 class="price">{{ moedaBR.format(transacao.valor) }}</h5>
+        <div class="actions">
+          <q-icon name="delete" @click="" class="icone-transation" />
+          <q-icon name="edit" @click="" class="icone-transation" />
+        </div>
+      </div>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
+import "../../css/carteira.scss";
 
 const valor = ref<number | null>(null);
 const descricao = ref<string>("");
@@ -90,59 +132,9 @@ totalDespesa.value = transacoes.value
   .reduce((acc, t) => acc + t.valor, 0);
 
 saldo.value = totalReceita.value - totalDespesa.value;
+
+const moedaBR = new Intl.NumberFormat("pt-BR", {
+  style: "currency",
+  currency: "BRL",
+});
 </script>
-
-<style scoped>
-.formulario-container {
-  margin: 0 auto;
-  max-width: 600px;
-}
-
-.title {
-  padding: 0;
-  margin: 0;
-  font-size: 2rem;
-  font-weight: bold;
-}
-
-.resumo {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  gap: 20px;
-  margin-bottom: 20px;
-}
-
-.box-despesa {
-  background-color: #f44336;
-  color: white;
-  padding: 10px;
-  border-radius: 5px;
-}
-
-.box-receita {
-  background-color: #4caf50;
-  color: white;
-  padding: 10px;
-  border-radius: 5px;
-}
-
-.box-saldo {
-  background-color: #2196f3;
-  color: white;
-  padding: 10px;
-  border-radius: 5px;
-}
-
-.span-box {
-  font-size: 13px;
-  display: block;
-}
-
-.cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
-  padding: 1.5rem;
-}
-</style>
